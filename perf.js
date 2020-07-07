@@ -1,5 +1,29 @@
+/*
+ Shows performance between JSON and Protobuff
+
+ 1_000 iterations should output the following.
+
+  JSON
+  4ms / 148000 bytes
+  Protobuf
+  37ms / 70000 bytes
+
+ */
+
+/*
+  The file messages_pb.js was created by using the protoc compiler against messages.proto.
+ */
 const messages = require("./messages_pb");
 
+// Change the amount of iterations to see difference in time and bytesize
+const ITERATIONS = 1_000;
+
+// leave these alone
+let duration = 0;
+let length = 0;
+let start = new Date();
+
+// Create ProtoBuff records
 const address_pb = new messages.Address();
 address_pb.setAddress1("1 Yonge St.");
 address_pb.setAddress2("Unit #1000");
@@ -12,6 +36,7 @@ customer_pb.setFirstName("Luke");
 customer_pb.setLastName("Skywalker");
 customer_pb.setAddress(address_pb);
 
+// A regular JS type of record
 const customer_standard = {
   firstName: "John",
   lastName: "Smith",
@@ -24,10 +49,7 @@ const customer_standard = {
   },
 };
 
-const ITERATIONS = 1_000;
-let duration = 0;
-let length = 0;
-let start = new Date();
+// Serialize and Deserialize ITERATIONS times and print out how long it took, and size of data.
 for (let i = 0; i < ITERATIONS; i++) {
   data = JSON.stringify(customer_standard);
   JSON.parse(data);
